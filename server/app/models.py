@@ -3,21 +3,10 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-class UserAccount(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_pic = models.ImageField(upload_to='profile_pics', blank=True)
-    income = models.IntegerField(default=0)
-    phone = models.CharField(max_length=10)
-    address = models.TextField()
-
-    def __str__(self):
-        return self.user.username
-
 class Record(models.Model):
-    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.IntegerField()
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField()
     description = models.TextField()
     type = models.CharField(max_length=100, choices=(("Income", "Income"), ("Expense", "Expense")))
     category = models.CharField(max_length=100, choices=(
@@ -46,4 +35,4 @@ class Record(models.Model):
         ("Others", "Others")))
 
     def __str__(self):
-        return self.title
+        return self.description

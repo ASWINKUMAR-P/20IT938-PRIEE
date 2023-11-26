@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Expense Tracker</title>
+    <link rel="stylesheet" href="{% static 'css/dash.css' %}">
+</head>
+
+<body>
+    <header>
+        <div>
+            <h1 class="name">Personal Expense Tracker</h1>
+            <p class="username">Hello, {{ user.username }}</p> 
+        </div>
+        <div class="menu">
+            <a href="{% url 'home' %}" class="active">Home</a>
+            <a href="{% url 'expense' %}">Add Expense</a>
+            <a href="{% url 'income' %}">Add Income</a>
+            <a href="#">View Analytics</a>
+            <a href="#">Edit Profile</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </header>
+    <section>
+        <form method="post" action="{% url 'filter' %}">
+        {% csrf_token %}
+            <div class="filters-and-buttons">
+            <div class="filters">
+                <label for="month">Select the month:</label>
+                <input type="month" id="month" name="month">
+                
+                or &nbsp;
+                
+                <label for="date">Select the date:</label>
+                <input type="date" id="date" name="date">
+
+                &nbsp;
+
+                <label for="inex">Select income/expense:</label>
+                <select id="inex" name="inex">
+                    <option value="All">All</option>
+                    <option value="Income">Income</option>
+                    <option value="Expense">Expense</option>
+                </select>
+
+                &nbsp;
+                
+                <label for="category">Select the type:</label>
+                <select id="category" name="category">
+                    <option value="All">All</option>
+                    <option value="Salary">Salary</option>
+                    <option value="freelance">Freelance</option>
+                    <!-- Add other income types as options -->
+                </select>
+            </div>
+            <button class="apply-button" type="submit">Apply</button>
+        </div>
+        </form>
+
+        <table class="table-container">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Income/Expense</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in records %}
+                <tr>
+                    <td>{{ item.date }}</td>
+                    {% if item.type == "Expense" %}
+                    <td>Expense &darr;</td>
+                    {% else %}
+                    <td>Income &uarr;</td>
+                    {% endif %}
+                    <td>{{ item.category }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.amount }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No records found</td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>
