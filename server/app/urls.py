@@ -9,4 +9,5 @@ urlpatterns=[
     path('addexpense/',addExpense,name="expense"),
     path('addincome/',addIncome,name="income"),
     path('filter/',filter,name="filter"),
+    path('edit/',edit,name="edit"),
 ]

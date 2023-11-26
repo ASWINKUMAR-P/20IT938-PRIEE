@@ -80,57 +80,43 @@ def addIncome(request):
 
 @login_required(login_url="/login")
 def filter(request):
+    date = request.POST.get("date")
+    month = request.POST.get("month")
+    type = request.POST.get("inex")
+    category = request.POST.get("category")
+
+    records = Record.objects.filter(user=request.user)
+
+    if date:
+        records = records.filter(date=date)
+
+    elif month:
+        mm = month.split("-")[1]
+        yy = month.split("-")[0]
+        mm = int(mm)
+        yy = int(yy)
+        print(mm, yy)
+        records = records.filter(date__month=mm , date__year=yy)
+
+    if type != "All":
+        records = records.filter(type=type)
+
+    if category != "All":
+        records = records.filter(category=category)
+
+    return render(request, "dash.html", {"records": records})
+
+@login_required(login_url="/login")
+def edit(request):
     if request.method == "POST":
-        date = request.POST.get("date")
-        month = request.POST.get("month")
-        type = request.POST.get("inex")
-        category = request.POST.get("category")
-        print(date)
-        print(month)
-        print(str(date), str(month), type, category)
-        if not date is False:
-            if type == "Income" and category == "All":
-                records = Record.objects.filter(date=date, user=request.user, type=type)
-            elif type == "Expense" and category == "All":
-                records = Record.objects.filter(date=date, user=request.user, type=type)
-            elif type == "Income" and category != "All":
-                records = Record.objects.filter(date=date, user=request.user, type=type, category=category)
-            elif type == "Expense" and category != "All":
-                records = Record.objects.filter(date=date, user=request.user, type=type, category=category)
-            elif type == "All" and category == "All":
-                records = Record.objects.filter(date=date, user=request.user)
-            elif type == "All" and category != "All":
-                records = Record.objects.filter(date=date, user=request.user, category=category)
-            else:
-                records = Record.objects.filter(date=date, user=request.user)
-        elif not month is False:
-            if type == "Income" and category == "All":
-                records = Record.objects.filter(date__month=month, user=request.user, type=type)
-            elif type == "Expense" and category == "All":
-                records = Record.objects.filter(date__month=month, user=request.user, type=type)
-            elif type == "Income" and category != "All":
-                records = Record.objects.filter(date__month=month, user=request.user, type=type, category=category)
-            elif type == "Expense" and category != "All":
-                records = Record.objects.filter(date__month=month, user=request.user, type=type, category=category)
-            elif type == "All" and category == "All":
-                records = Record.objects.filter(date__month=month, user=request.user)
-            elif type == "All" and category != "All":
-                records = Record.objects.filter(date__month=month, user=request.user, category=category)      
-            else:
-                records = Record.objects.filter(date__month=month, user=request.user)
-        else: 
-            if type == "Income" and category == "All":
-                records = Record.objects.filter(user=request.user, type=type)
-            elif type == "Expense" and category == "All":
-                records = Record.objects.filter(user=request.user, type=type)
-            elif type == "Income" and category != "All":
-                records = Record.objects.filter(user=request.user, type=type, category=category)
-            elif type == "Expense" and category != "All":
-                records = Record.objects.filter(user=request.user, type=type, category=category)
-            elif type == "All" and category == "All":
-                records = Record.objects.filter(user=request.user)
-            elif type == "All" and category != "All":
-                records = Record.objects.filter(user=request.user, category=category)
-            else:
-                records = Record.objects.filter(user=request.user)
-        return render(request, "dash.html", {"records": records})
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        user = request.user
+        if password != "":
+            user.set_password(password)
+        user.username = username
+        user.email = email
+        user.save()
+        print("User Updated")
+    return render(request, "dash.html",{"user": request.user})

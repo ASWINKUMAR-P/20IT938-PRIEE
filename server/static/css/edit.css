@@ -46,40 +46,52 @@ header {
     background-color: #5c149d; /* Active page color */
 }
 
-section {
-    margin: 20px;
+.edit-profile-section {
+    max-width: 600px;
+    margin: 50px auto; /* Centered and adjusted margin */
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
 }
 
+.edit-profile-form {
+    margin-top: 20px;
+}
+
 .form-group {
     margin-bottom: 20px;
 }
 
-label {
+.form-group label {
     display: block;
-    font-weight: bold;
+    font-size: 1rem;
+    color: #333;
     margin-bottom: 5px;
 }
 
-input, select {
-    width: 95%;
+.form-group input {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
+    width: 95%;
 }
 
-button {
-    background-color: #6a0dad;
+.form-group input:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.apply-button {
+    background-color: #6a0dad; /* Main color */
     color: #fff;
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-button:hover {
-    background-color: #5c149d;
+.apply-button:hover {
+    background-color: #5c149d; /* Adjusted hover color */
 }
