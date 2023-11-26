@@ -8,6 +8,15 @@
     <title>Registration form</title>
     <link rel="stylesheet" href="{% static 'css/ls.css' %}">
 </head>
+{% if username_exist == True %}
+<script>
+    alert("Username already exists");
+</script>
+{% elif email_exist == True %}
+<script>
+    alert("Email already exists");
+</script>
+{% endif %}
 
 <body>
     <div class="container">
@@ -15,9 +24,9 @@
             <header>Signup</header>
             <form method="post" action="{% url 'signup' %}">
                 {% csrf_token %}
-                <input type="text" placeholder="Enter your username" name="username">
-                <input type="text" placeholder="Enter your email" name="email">
-                <input type="password" placeholder="Enter your password" name="password">
+                <input type="text" placeholder="Enter your username" name="username" required>
+                <input type="text" placeholder="Enter your email" name="email" required>
+                <input type="password" placeholder="Enter your password" name="password" required>
                 <input type="submit" class="button" value="Submit">
             </form>
             <div class="signup">

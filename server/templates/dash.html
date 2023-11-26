@@ -1,19 +1,17 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal Expense Tracker</title>
     <link rel="stylesheet" href="{% static 'css/dash.css' %}">
 </head>
-
 <body>
     <header>
         <div>
             <h1 class="name">Personal Expense Tracker</h1>
-            <p class="username">Hello, {{ user.username }}</p> 
+            <p class="username">Hello, {{ user.username }}</p>
         </div>
         <div class="menu">
             <a href="{% url 'home' %}" class="active">Home</a>
@@ -26,40 +24,52 @@
     </header>
     <section>
         <form method="post" action="{% url 'filter' %}">
-        {% csrf_token %}
+            {% csrf_token %}
             <div class="filters-and-buttons">
-            <div class="filters">
-                <label for="month">Select the month:</label>
-                <input type="month" id="month" name="month">
-                
-                or &nbsp;
-                
-                <label for="date">Select the date:</label>
-                <input type="date" id="date" name="date">
-
-                &nbsp;
-
-                <label for="inex">Select income/expense:</label>
-                <select id="inex" name="inex">
-                    <option value="All">All</option>
-                    <option value="Income">Income</option>
-                    <option value="Expense">Expense</option>
-                </select>
-
-                &nbsp;
-                
-                <label for="category">Select the type:</label>
-                <select id="category" name="category">
-                    <option value="All">All</option>
-                    <option value="Salary">Salary</option>
-                    <option value="freelance">Freelance</option>
-                    <!-- Add other income types as options -->
-                </select>
+                <div class="filters">
+                    <label for="month">Select the month:</label>
+                    {% if month %}
+                    <input type="month" id="month" name="month" value="{{ month }}">
+                    {% else %}
+                    <input type="month" id="month" name="month">
+                    {% endif %}
+                    or &nbsp;
+                    <label for="date">Select the date:</label>
+                    {% if date %}
+                    <input type="date" id="date" name="date" value="{{ date }}">
+                    {% else %}
+                    <input type="date" id="date" name="date">
+                    {% endif %}
+                    &nbsp;
+                    <label for="inex">Select income/expense:</label>
+                    <select id="inex" name="inex">
+                        {% for item in types %}
+                        {% if not type and item == "All" %}
+                        <option value="All" selected>All</option>
+                        {% elif type == item %}
+                        <option value="{{ item }}" selected>{{ item }}</option>
+                        {% else %}
+                        <option value="{{ item }}">{{ item }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                    &nbsp;
+                    <label for="category">Select the type:</label>
+                    <select id="category" name="category">
+                        {% for item in categories %}
+                        {% if not category and item == "All" %}
+                        <option value="All" selected>All</option>
+                        {% elif category == item %}
+                        <option value="{{ item }}" selected>{{ item }}</option>
+                        {% else %}
+                        <option value="{{ item }}">{{ item }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <button class="apply-button" type="submit">Apply</button>
             </div>
-            <button class="apply-button" type="submit">Apply</button>
-        </div>
         </form>
-
         <table class="table-container">
             <thead>
                 <tr>
@@ -68,7 +78,6 @@
                     <th>Category</th>
                     <th>Description</th>
                     <th>Amount</th>
-
                 </tr>
             </thead>
             <tbody>
@@ -89,9 +98,9 @@
                     <td colspan="5">No records found</td>
                 </tr>
                 {% endfor %}
-
             </tbody>
         </table>
     </section>
+
 </body>
 </html>

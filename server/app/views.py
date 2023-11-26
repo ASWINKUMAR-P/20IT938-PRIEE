@@ -6,6 +6,10 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 # Create your views here.
 
+income_types = ["All","Salary", "Business", "Gifts", "Interest", "Rental", "Other"]
+expense_types = ["All","Groceries","Food","Fuel","Tax","Electricity","Shopping","Travel","Loan","Entertainment","Health","Investment","Rent","Mobile Bills","TV & OTT","EMI"]
+types = ["All","Income","Expense"]
+
 def loginPage(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -17,8 +21,8 @@ def loginPage(request):
             print("User Logged In")
             return redirect(reverse("home"))
         else:
-            print("Invalid Credentials")
-            return render(request, "login.html", {"error": "Invalid Credentials"})
+            is_invalid = True
+            return render(request, "login.html", {"is_invalid": is_invalid})
     return render(request, "login.html")
 
 def signupPage(request):
@@ -27,9 +31,11 @@ def signupPage(request):
         password = request.POST.get("password")
         email = request.POST.get("email")
         if User.objects.filter(username=username).exists():
-            return render(request, "signup.html", {"error": "Username already exists"})
+            username_exist = True
+            return render(request, "signup.html", {"username_exist": username_exist})
         if User.objects.filter(email=email).exists():
-            return render(request, "signup.html", {"error": "Email already exists"})
+            email_exist = True
+            return render(request, "signup.html", {"email_exist": email_exist})
         print(username, password, email)
         user = User.objects.create_user(username=username, password=password, email=email)
         user.save()
@@ -47,7 +53,9 @@ def homePage(request):
     records = Record.objects.filter(user=request.user)
     return render(request, "dash.html", {
         "user": request.user,
-        "records": records
+        "records": records,
+        "categories": set(income_types+expense_types),
+        "types": types
         })
 
 @login_required(login_url="/login")
@@ -84,12 +92,9 @@ def filter(request):
     month = request.POST.get("month")
     type = request.POST.get("inex")
     category = request.POST.get("category")
-
     records = Record.objects.filter(user=request.user)
-
     if date:
         records = records.filter(date=date)
-
     elif month:
         mm = month.split("-")[1]
         yy = month.split("-")[0]
@@ -97,14 +102,19 @@ def filter(request):
         yy = int(yy)
         print(mm, yy)
         records = records.filter(date__month=mm , date__year=yy)
-
     if type != "All":
         records = records.filter(type=type)
-
     if category != "All":
         records = records.filter(category=category)
-
-    return render(request, "dash.html", {"records": records})
+    return render(request, "dash.html", {
+        "records": records,
+        "date": date,
+        "month": month,
+        "type": type,
+        "category": category,
+        "categories": set(income_types+expense_types),
+        "types": types,
+        })
 
 @login_required(login_url="/login")
 def edit(request):
@@ -119,4 +129,5 @@ def edit(request):
         user.email = email
         user.save()
         print("User Updated")
-    return render(request, "dash.html",{"user": request.user})
+        return render(request, "dash.html",{"user": request.user})
+    return render(request, "edit.html", {"user": request.user})

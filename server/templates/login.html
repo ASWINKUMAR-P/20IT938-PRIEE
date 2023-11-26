@@ -7,6 +7,11 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Login Form</title>
   <link rel="stylesheet" href="{% static 'css/ls.css' %}">
+  {% if is_invalid == True %}
+  <script>
+  alert("Invalid username or password");
+  </script>
+  {% endif %}
 </head>
 <body>
   <div class="container">
