@@ -4,11 +4,18 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from django.db.models import Sum
+import plotly.express as px
+from plotly.offline import plot
+
 # Create your views here.
 
 income_types = ["All","Salary", "Business", "Gifts", "Interest", "Rental", "Other"]
 expense_types = ["All","Groceries","Food","Fuel","Tax","Electricity","Shopping","Travel","Loan","Entertainment","Health","Investment","Rent","Mobile Bills","TV & OTT","EMI"]
 types = ["All","Income","Expense"]
+
+i_types = ["Salary", "Business", "Gifts", "Interest", "Rental", "Other"]
+e_types = ["Groceries","Food","Fuel","Tax","Electricity","Shopping","Travel","Loan","Entertainment","Health","Investment","Rent","Mobile Bills","TV & OTT","EMI"]
 
 def loginPage(request):
     if request.method == "POST":
@@ -131,3 +138,121 @@ def edit(request):
         print("User Updated")
         return render(request, "dash.html",{"user": request.user})
     return render(request, "edit.html", {"user": request.user})
+
+def analytics(request):
+    # Sample data
+    records = Record.objects.filter(user=request.user)
+    income_categories = []
+    expense_categories = []
+    income_data = []
+    expense_data = []
+    # append the categories and sum of all its type in income_data and expense_data
+    for category in set(i_types):
+        income_categories.append(category)
+        if records.filter(category=category, type="Income").aggregate(Sum('amount'))['amount__sum'] is None:
+            income_data.append(0)
+        else:
+            income_data.append(records.filter(category=category, type="Income").aggregate(Sum('amount'))['amount__sum'])
+    
+    for category in set(e_types):
+        expense_categories.append(category)
+        if records.filter(category=category, type="Expense").aggregate(Sum('amount'))['amount__sum'] is None:
+            expense_data.append(0)
+        else:
+            expense_data.append(records.filter(category=category, type="Expense").aggregate(Sum('amount'))['amount__sum'])
+    print(income_categories)
+    print(income_data) 
+    print(expense_categories) 
+    print(expense_data)    
+    # Generate plots using Plotly
+    income_plot = px.bar(x=income_categories, y=income_data, labels={'x': 'Category', 'y': 'Income'})
+    expense_plot = px.bar(x=expense_categories, y=expense_data, labels={'x': 'Category', 'y': 'Expense'})
+    income_vs_expense_plot = px.pie(values=[sum(income_data), sum(expense_data)], names=['Income', 'Expense'], labels={'x': 'Category', 'y': 'Amount'})
+    # Convert Plotly plots to divs
+    income_plot_div = plot(income_plot, output_type='div')
+    expense_plot_div = plot(expense_plot, output_type='div')
+    income_vs_expense_plot_div = plot(income_vs_expense_plot, output_type='div')
+
+    return render(request, 'analytics.html', {
+        'income_plot_div': income_plot_div,
+        'expense_plot_div': expense_plot_div,
+        'income_vs_expense_plot_div': income_vs_expense_plot_div,
+    })
+
+def analyticsByDate(request):
+    date = request.POST.get("date")
+    records = Record.objects.filter(user=request.user)
+    if date:
+        records = records.filter(date=date)
+    income_categories = []
+    expense_categories = []
+    income_data = []
+    expense_data = []
+    # append the categories and sum of all its type in income_data and expense_data
+    for category in set(i_types):
+        income_categories.append(category)
+        if records.filter(category=category, type="Income").aggregate(Sum('amount'))['amount__sum'] is None:
+            income_data.append(0)
+        else:
+            income_data.append(records.filter(category=category, type="Income").aggregate(Sum('amount'))['amount__sum'])
+    
+    for category in set(e_types):
+        expense_categories.append(category)
+        if records.filter(category=category, type="Expense").aggregate(Sum('amount'))['amount__sum'] is None:
+            expense_data.append(0)
+        else:
+            expense_data.append(records.filter(category=category, type="Expense").aggregate(Sum('amount'))['amount__sum'])
+    
+    # Generate plots using Plotly
+    income_plot = px.bar(x=income_categories, y=income_data, labels={'x': 'Category', 'y': 'Income'})
+    expense_plot = px.bar(x=expense_categories, y=expense_data, labels={'x': 'Category', 'y': 'Expense'})
+    income_vs_expense_plot = px.pie(values=[sum(income_data), sum(expense_data)], names=['Income', 'Expense'], labels={'x': 'Category', 'y': 'Amount'})
+    # Convert Plotly plots to divs
+    income_plot_div = plot(income_plot, output_type='div')
+    expense_plot_div = plot(expense_plot, output_type='div')
+    income_vs_expense_plot_div = plot(income_vs_expense_plot, output_type='div')
+    return render(request, 'analytics.html', {
+        'income_plot_div': income_plot_div,
+        'expense_plot_div': expense_plot_div,
+        'income_vs_expense_plot_div': income_vs_expense_plot_div,
+        'date': date
+    })
+
+def analyticsByMonth(request):
+    month = request.POST.get("month")
+    records = Record.objects.filter(user=request.user)
+    if month:
+        records = records.filter(date__month=month.split("-")[1] , date__year=month.split("-")[0])
+    income_categories = []
+    expense_categories = []
+    income_data = []
+    expense_data = []
+    # append the categories and sum of all its type in income_data and expense_data
+    for category in set(i_types):
+        income_categories.append(category)
+        if records.filter(category=category, type="Income").aggregate(Sum('amount'))['amount__sum'] is None:
+            income_data.append(0)
+        else:
+            income_data.append(records.filter(category=category, type="Income").aggregate(Sum('amount'))['amount__sum'])
+    
+    for category in set(e_types):
+        expense_categories.append(category)
+        if records.filter(category=category, type="Expense").aggregate(Sum('amount'))['amount__sum'] is None:
+            expense_data.append(0)
+        else:
+            expense_data.append(records.filter(category=category, type="Expense").aggregate(Sum('amount'))['amount__sum'])
+        
+    # Generate plots using Plotly
+    income_plot = px.bar(x=income_categories, y=income_data, labels={'x': 'Category', 'y': 'Income'})
+    expense_plot = px.bar(x=expense_categories, y=expense_data, labels={'x': 'Category', 'y': 'Expense'})
+    income_vs_expense_plot = px.pie(values=[sum(income_data), sum(expense_data)], names=['Income', 'Expense'], labels={'x': 'Category', 'y': 'Amount'})
+    # Convert Plotly plots to divs
+    income_plot_div = plot(income_plot, output_type='div')
+    expense_plot_div = plot(expense_plot, output_type='div')
+    income_vs_expense_plot_div = plot(income_vs_expense_plot, output_type='div')
+    return render(request, 'analytics.html', {
+        'income_plot_div': income_plot_div,
+        'expense_plot_div': expense_plot_div,
+        'income_vs_expense_plot_div': income_vs_expense_plot_div,
+        'month': month
+    })

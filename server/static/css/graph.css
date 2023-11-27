@@ -1,0 +1,135 @@
+/* styles.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+header {
+    background-color: #6a0dad;
+    color: #fff;
+    text-align: left;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.name {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.username {
+    font-size: 1.2em;
+    margin-top: 5px;
+}
+
+.menu {
+    display: flex;
+    gap: 20px;
+}
+
+.menu a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.menu a:hover {
+    background-color: #5c149d;
+}
+
+.menu a.active {
+    background-color: #5c149d;
+}
+
+section {
+    margin: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.filters-and-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+.filters-and-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.filters select{
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    width: 150px;
+}
+
+.filters input {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    width: 150px;
+}
+
+.filters select:focus, .filters input:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.apply-button {
+    background-color: #6a0dad;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.apply-button:hover {
+    background-color: #5c149d;
+}
+
+.graph-container {
+    display: flex;
+    gap: 20px;
+}
+
+.graph-container div {
+    flex: 1; /* Each graph takes equal space */
+    max-width: 400px; /* Limit the width of each graph */
+}
+
+.graph-container div h3 {
+    margin-bottom: 3px; /* Add space between graph title and Plotly div */
+}
+
+.stats-container {
+    margin-top: 20px;
+}
+
+.stats-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.stats-container li {
+    margin-bottom: 10px;
+}

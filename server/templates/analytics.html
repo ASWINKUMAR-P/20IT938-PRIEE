@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics</title>
+    <link rel="stylesheet" href="{% static 'css/graph.css' %}">
+</head>
+<body>
+    <header>
+        <div>
+            <h1 class="name">Personal Expense Tracker</h1>
+            <p class="username">Hello, {{ request.user.username }}</p>
+        </div>
+        <div class="menu">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'expense' %}">Add Expense</a>
+            <a href="{% url 'income' %}">Add Income</a>
+            <a href="{% url 'analytics' %}" class="active">View Analytics</a>
+            <a href="{% url 'edit' %}">Edit Profile</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </header>
+    <section>
+        <h2>Analytics</h2>
+        <div class="filters-and-buttons">
+            <div class="filters">
+                <form action="{% url 'analytics-date' %}" method="POST">
+                    {% csrf_token %}
+                    <label for="date-input">Select Date:-</label>
+                    {% if date %}
+                    <input type="date" id="date-input" name="date" value="{{ date }}">
+                    {% else %}
+                    <input type="date" id="date-input" name="date">
+                    {% endif %}
+                    <button class="apply-button" type="submit">Apply</button>
+                </form>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <form action="{% url 'analytics-month' %}" method="POST">
+                    {% csrf_token %}
+                    <label for="month-input">Select Month:-</label>
+                    {% if month %}
+                    <input type="month" id="month-input" name="month" value="{{ month }}">
+                    {% else %}
+                    <input type="month" id="month-input" name="month">
+                    {% endif %}
+                    <button class="apply-button">Apply</button>
+                </form>
+            </div>
+        </div>
+        <div class="graph-container">
+            <div>
+                <h3>Variety of Income</h3>
+                {{ income_plot_div|safe }}
+            </div>
+            <div>
+                <h3>Variety of Expense</h3>
+                {{ expense_plot_div|safe }}
+            </div>
+            <div>
+                <h3>Income vs Expense</h3>
+                {{ income_vs_expense_plot_div|safe }}
+            </div>
+        </div>
+    </section>
+</body>
+</html>

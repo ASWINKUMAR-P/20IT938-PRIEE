@@ -10,4 +10,7 @@ urlpatterns=[
     path('addincome/',addIncome,name="income"),
     path('filter/',filter,name="filter"),
     path('edit/',edit,name="edit"),
+    path('analytics/',analytics,name="analytics"),
+    path('analytics-date/',analyticsByDate,name="analytics-date"),
+    path('analytics-month/',analyticsByMonth,name="analytics-month")
 ]
