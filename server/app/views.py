@@ -139,6 +139,7 @@ def edit(request):
         return render(request, "dash.html",{"user": request.user})
     return render(request, "edit.html", {"user": request.user})
 
+@login_required(login_url="/login")
 def analytics(request):
     # Sample data
     records = Record.objects.filter(user=request.user)
@@ -179,6 +180,7 @@ def analytics(request):
         'income_vs_expense_plot_div': income_vs_expense_plot_div,
     })
 
+@login_required(login_url="/login")
 def analyticsByDate(request):
     date = request.POST.get("date")
     records = Record.objects.filter(user=request.user)
@@ -218,6 +220,7 @@ def analyticsByDate(request):
         'date': date
     })
 
+@login_required(login_url="/login")
 def analyticsByMonth(request):
     month = request.POST.get("month")
     records = Record.objects.filter(user=request.user)

@@ -11,9 +11,11 @@ class Record(models.Model):
     type = models.CharField(max_length=100, choices=(("Income", "Income"), ("Expense", "Expense")))
     category = models.CharField(max_length=100, choices=(
         # income
+        ("Interests", "Interests"),
+        ("Gifts", "Gifts"),
         ("Salary", "Salary"),
         ("Business", "Business"),
-        ("Loan", "Loan"),
+        ("Rentals", "Rentals"),
         ("Others", "Others"),
 
         # expense
@@ -36,3 +38,11 @@ class Record(models.Model):
 
     def __str__(self):
         return self.description
+
+class User(models.Model):
+    username = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100)
+
+    def __str__(self):
+        return self.user.username
